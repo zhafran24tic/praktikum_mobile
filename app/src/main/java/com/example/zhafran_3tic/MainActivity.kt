@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.zhafran_3tic.databinding.ActivityLoginBinding
 import com.example.zhafran_3tic.databinding.ActivityMainBinding
 import com.example.zhafran_3tic.pertemuan_5.LimaActivity
+import com.example.zhafran_3tic.pertemuan_6.EnamActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val sharedPref = getSharedPreferences("user_pref", MODE_PRIVATE)
         val nama = intent.getStringExtra("nama")
         val umur = intent.getIntExtra("umur",0)
 
@@ -41,7 +44,26 @@ class MainActivity : AppCompatActivity() {
                startActivity(intent)
         }
 
+        binding.btnToEnam.setOnClickListener {
+            val intent = Intent(this@MainActivity, EnamActivity::class.java)
+            startActivity(intent)
+        }
 
+        binding.btnLogout.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Apakah Anda yakin ingin keluar?")
+                .setPositiveButton("Ya") { dialog, _ ->
+                    val editor = sharedPref.edit()
+                    editor.clear()
+                    editor.apply()
+                    dialog.dismiss()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+                .setNegativeButton("Batal") { dialog, _ -> dialog.dismiss() }
+                .show()
+        }
 
         binding.txtNama.setText(nama)
 
